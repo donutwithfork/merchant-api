@@ -1,0 +1,28 @@
+index:
+    path: /lucky/number/{max}
+    controller: App\Controller\LuckyController::number
+
+get_merchant_list:
+  path: /merchant/{sku}
+  controller: App\Controller\MerchantController::getMerchant
+  methods: GET
+
+get_merchant:
+  path: /merchant
+  controller: App\Controller\MerchantController::getMerchantGoodsList
+  methods: GET
+
+create_merchant:
+  path: /merchant
+  controller: App\Controller\MerchantController::createMerchantGood
+  methods: PUT
+
+update_merchant:
+  path: /merchant/{sku}
+  controller: App\Controller\MerchantController::updateMerchantGood
+  methods: POST
+
+remove_good:
+  path: /merchant/{sku}
+  controller: App\Controller\MerchantController::removeGood
+  methods: DELETE

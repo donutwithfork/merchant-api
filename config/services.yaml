@@ -1,0 +1,120 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        public: true
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Common/Iterator/'
+            - '../src/Common/Loop/'
+            - '../src/Common/Generators/'
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+
+    App\Common\Loader\GoodListLoader:
+        decorates: App\Service\Good\GetList
+
+    App\Common\Generators\DateTime\CurrentDateTimeFactory: '@app.common.generators.datetime.current_datetime_factory'
+
+    app.common.converters.types.common.to_json_converter:
+        class: App\Common\Converters\Types\Common\ToJsonConverter
+
+    app.common.iterator.factory:
+        class: App\Common\Iterator\IteratorFactory
+        arguments:
+            - '@app.common.converters.types.good.converter.full'
+
+    App\Common\Iterator\IteratorFactory: '@app.common.iterator.factory'
+
+    app.common.converters.types.good.converter.full:
+        class: App\Common\Converters\Types\Good\GoodFullConverter
+        arguments:
+            - '@app.common.converters.types.good.converter.entity_to_model'
+            - '@app.common.converters.types.good.converter.model_to_array'
+
+    app.common.converters.types.good.converter.short:
+        class: App\Common\Converters\Types\Good\GoodShortConverter
+        arguments:
+            - '@app.common.converters.types.good.converter.entity_to_model'
+            - '@app.common.converters.types.good.converter.model_to_id_array'
+
+    app.common.converters.types.good.converter.entity_to_model:
+        class: App\Common\Converters\Types\Good\GoodEntityToModelConverter
+
+    app.common.converters.types.good.converter.model_to_array:
+        class: App\Common\Converters\Types\Good\GoodModelToArrayConverter
+
+    app.common.converters.types.good.converter.model_to_id_array:
+        class: App\Common\Converters\Types\Good\GoodModelToIdArrayConverter
+
+    app.common.generators.datetime.current_datetime_factory:
+        autowire: false
+        class: App\Common\Generators\DateTime\CurrentDateTimeFactory
+        arguments:
+            - '@app.common.generators.datetime.model_datetime_decorator_arbitrary_factory'
+            - '@app.common.generators.datetime_current_alias_datetime_factory'
+            - '@app.common.generators.datetime.datetime_class_name_picker'
+
+    app.common.generators.datetime.model_datetime_decorator_arbitrary_factory:
+        class: App\Common\Generators\DateTime\Model\DateTimeDecoratorArbitraryFactory
+        arguments:
+            -
+                App\Common\Generators\DateTime\Model\Carbon\CarbonDecorator: '@app.common.generators.model.carbon.decorator.factory'
+                App\Common\Generators\DateTime\Model\DateTime\DateTimeDecorator: '@app.common.generators.model.datetime.decorator.factory'
+
+    app.common.generators.datetime_current_alias_datetime_factory:
+        class: App\Common\Generators\DateTime\CurrentAliasDateTimeFactory
+        arguments:
+            - 'now'
+
+    app.common.generators.datetime.datetime_class_name_picker:
+        class: App\Common\Generators\DateTime\DateTimeClassNamePicker
+        arguments:
+            - '@app.common.iterator.factory'
+            -
+                1: App\Common\Generators\DateTime\Model\DateTime\DateTimeDecorator
+                10: App\Common\Generators\DateTime\Model\Carbon\CarbonDecorator
+
+    app.common.generators.model.carbon.decorator.factory:
+        class: App\Common\Generators\DateTime\Model\Carbon\CarbonDecoratorFactory
+        arguments:
+            - '@app.common.generators.model.carbon.factory'
+            - '@app.common.generators.datetime.model.timestamp.factory'
+
+    app.common.generators.model.datetime.decorator.factory:
+        class: App\Common\Generators\DateTime\Model\DateTime\DateTimeDecoratorFactory
+        arguments:
+            - '@app.common.generators.model.datetime.factory'
+            - '@app.common.generators.datetime.model.timestamp.factory'
+
+    app.common.generators.model.carbon.factory:
+        class: App\Common\Generators\DateTime\Model\Carbon\CarbonFactory
+
+    app.common.generators.model.datetime.factory:
+        class: App\Common\Generators\DateTime\Model\DateTime\DateTimeFactory
+
+    app.common.generators.datetime.converter.converter_factory:
+        class: App\Common\Generators\DateTime\Converter\ConverterFactory
+
+    app.common.generators.datetime.model.timestamp.factory:
+        class: App\Common\Generators\DateTime\Model\TimeStampFactory
+        arguments:
+            - '@app.common.generators.datetime.converter.converter_factory'

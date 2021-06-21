@@ -1,0 +1,84 @@
+{
+	"variables": [],
+	"info": {
+		"name": "мерчант_тест",
+		"_postman_id": "c7797b77-7271-8554-4d14-f97ac7712a10",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create item",
+			"request": {
+				"url": "http://localhost:8080/merchant",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"sku\": \"lootbox_01\",\n\t\"name\": \"lootbox\",\n\t\"type\": \"lootbox\",\n\t\"costValue\": \"150.00\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "edit item",
+			"request": {
+				"url": "http://localhost:8080/merchant/sword_002",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"sku\": \"sword_002\",\n\t\"name\": \"Ehchanted Vulcan Sword\",\n\t\"type\": \"weapon\",\n\t\"costValue\": \"150.00\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get items list",
+			"request": {
+				"url": "http://localhost:8080/merchant",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get item",
+			"request": {
+				"url": "http://localhost:8080/merchant/sword_001",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete item",
+			"request": {
+				"url": "http://localhost:8080/merchant/sword_014",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
